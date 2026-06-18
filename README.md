@@ -1,172 +1,131 @@
 # 🎯 TalentOS
 
-### AI-Powered Talent Intelligence & Hiring Infrastructure
+> Open-source AI-powered Talent Intelligence & Hiring Infrastructure
 
-TalentOS is an open-source platform designed to help organizations discover, evaluate, manage, and hire talent more efficiently.
+TalentOS is an open-source platform designed to help organizations discover, evaluate, manage, and hire talent more effectively.
 
-Our mission is to create modern hiring infrastructure that benefits both recruiters and candidates through intelligent workflows, automation, and AI.
+Our goal is to build the operating system for modern hiring by combining recruitment workflows, talent intelligence, and artificial intelligence into a single platform.
 
 ---
 
-# Problem
+# Why TalentOS?
 
-Hiring today is broken.
+Hiring is still fragmented.
 
-Recruiters struggle with:
+Recruiters manage candidates across spreadsheets, emails, job boards, ATS platforms, and interview tools.
 
-* Thousands of applications
-* Manual resume screening
-* Candidate tracking across multiple platforms
-* Lack of hiring insights
-* Slow communication
+Candidates apply to dozens of jobs with little visibility into their progress.
 
-Candidates struggle with:
-
-* Limited visibility into opportunities
-* Poor application tracking
-* Lack of feedback
-* Generic hiring processes
-
-TalentOS aims to solve these problems through an open, AI-powered hiring platform.
+TalentOS aims to create a transparent, intelligent, and scalable hiring infrastructure for both recruiters and candidates.
 
 ---
 
 # Vision
 
-Build the open-source operating system for hiring.
+We believe hiring should be:
 
-A platform where:
+* Faster
+* More transparent
+* Data-driven
+* AI-assisted
+* Community-powered
 
-* Recruiters can discover talent efficiently
-* Candidates can showcase their skills effectively
-* Communities can connect talent with opportunities
-* AI assists decision-making while keeping humans in control
+TalentOS is building an open ecosystem where talent and opportunities can connect more efficiently.
 
 ---
 
-# Core Modules
+# MVP Scope
 
-## Candidate Management
+The first version of TalentOS focuses on four core areas:
 
-Manage and organize candidates throughout the hiring lifecycle.
+## 1. Candidate Management
+
+Manage candidate information throughout the hiring lifecycle.
 
 ### Features
 
 * Candidate Profiles
-* Resume Storage
+* Resume Upload
 * Application Tracking
 * Candidate Notes
-* Interview History
-* Status Management
+* Candidate Status Management
 
 ---
 
-## Job Management
+## 2. Job Management
 
 Create and manage hiring pipelines.
 
 ### Features
 
-* Job Creation
-* Job Publishing
-* Hiring Workflows
-* Application Tracking
-* Team Collaboration
+* Create Job Openings
+* Publish Jobs
+* Track Applications
+* Hiring Workflow Management
+* Recruiter Dashboard
 
 ---
 
-## Resume Intelligence
+## 3. Resume Intelligence
 
-AI-powered resume analysis.
+AI-powered resume understanding.
 
 ### Features
 
 * Resume Parsing
 * Skill Extraction
 * Experience Analysis
-* Education Analysis
+* Education Extraction
 * Resume Scoring
-* ATS Compatibility
 
 ---
 
-## Talent Search
+## 4. Candidate Matching Engine
 
-Search candidates using structured and semantic search.
-
-### Features
-
-* Skill Search
-* Experience Search
-* Semantic Search
-* Candidate Recommendations
-
----
-
-## Interview Management
-
-Streamline interview processes.
+Match talent with opportunities.
 
 ### Features
 
-* Interview Scheduling
-* Feedback Collection
-* Evaluation Forms
-* Interview History
-
----
-
-## Talent Analytics
-
-Hiring insights and reporting.
-
-### Features
-
-* Pipeline Analytics
-* Hiring Funnel Metrics
-* Candidate Conversion Rates
-* Source Effectiveness
-* Hiring Velocity
-
----
-
-## AI Matching Engine
-
-Match candidates with opportunities.
-
-### Features
-
-* Candidate-Job Matching
+* Skill Matching
+* Candidate Ranking
+* Job Recommendations
 * Skill Gap Analysis
-* Opportunity Recommendations
-* Ranking System
 
 ---
 
-# System Architecture
+# Architecture
 
 ```text
 Frontend (Next.js)
 
-        ↓
+       ↓
 
-Backend API (Spring Boot)
+Backend API (FastAPI)
 
-        ↓
+       ↓
 
-Services Layer
+Business Services
 
 ├── Candidate Service
 ├── Job Service
 ├── Resume Service
 ├── Matching Service
-├── Analytics Service
+└── Analytics Service
 
-        ↓
+       ↓
 
 PostgreSQL
 Redis
-Object Storage
+Qdrant
+
+       ↓
+
+AI Layer
+
+├── Resume Parser
+├── Embedding Engine
+├── Matching Engine
+└── Recommendation Engine
 ```
 
 ---
@@ -177,124 +136,111 @@ Object Storage
 
 * Next.js
 * TypeScript
-* Tailwind CSS
+* TailwindCSS
 
 ## Backend
 
-* Java
-* Spring Boot
-* Spring Security
-* Spring Data JPA
+* Python
+* FastAPI
+* SQLAlchemy
+* Pydantic
 
 ## Database
 
 * PostgreSQL
+
+## Cache
+
+* Redis
+
+## Vector Database
+
+* Qdrant
+
+## AI
+
+* OpenAI
+* Ollama
+* Sentence Transformers
 
 ## Infrastructure
 
 * Docker
 * GitHub Actions
 
-## AI Layer
-
-* OpenAI
-* Local LLMs
-* Embedding Models
-* Vector Databases
-
 ---
 
-# MVP Scope
-
-The first version focuses on:
-
-### Candidate Management
-
-* Create Candidate
-* Update Candidate
-* Candidate Dashboard
-
-### Job Management
-
-* Create Job
-* List Jobs
-* Apply To Jobs
-
-### Resume Intelligence
-
-* Resume Upload
-* Resume Parsing
-* Skill Extraction
-
-### Recruiter Dashboard
-
-* View Candidates
-* Filter Candidates
-* Manage Pipeline
-
----
-
-# Open Issues For Contributors
-
-## Frontend
-
-* Landing Page
-* Dashboard UI
-* Authentication Pages
-* Candidate Profile Screens
-
-## Backend
-
-* Authentication Service
-* Candidate APIs
-* Job APIs
-* Resume APIs
-
-## AI
-
-* Resume Parser
-* Skill Extraction Engine
-* Candidate Ranking
-
-## DevOps
-
-* Docker Setup
-* CI/CD Pipelines
-* Monitoring Setup
-
-## Documentation
-
-* Architecture Diagrams
-* API Documentation
-* Setup Guides
-
----
-
-# Project Structure
+# Repository Structure
 
 ```text
-talent-os
+TalentOS
 
 ├── frontend
 ├── backend
+├── ai
 ├── docs
 ├── infrastructure
-├── ai
 ├── scripts
 └── .github
 ```
 
 ---
 
-# Getting Started
+# Current Development Areas
 
-```bash
-git clone https://github.com/Bugbaar/talent-os.git
+We are actively looking for contributors in:
 
-cd talent-os
-```
+### Backend
 
-Follow the setup guide in the docs folder.
+* Authentication
+* Candidate APIs
+* Job APIs
+* Search APIs
+
+### Frontend
+
+* Landing Page
+* Dashboard
+* Candidate Screens
+* Recruiter Screens
+
+### AI
+
+* Resume Parser
+* Matching Engine
+* Recommendation Engine
+* Embeddings
+
+### DevOps
+
+* Docker Setup
+* CI/CD
+* Deployment Workflows
+
+### Documentation
+
+* API Documentation
+* Architecture Documentation
+* Contributor Guides
+
+---
+
+# Good First Issues
+
+New contributors can start with:
+
+* Documentation Improvements
+* API Documentation
+* UI Components
+* Bug Fixes
+* Unit Tests
+* Setup Guides
+
+Look for issues tagged:
+
+* `good-first-issue`
+* `help-wanted`
+* `documentation`
 
 ---
 
@@ -306,26 +252,45 @@ We welcome:
 * Frontend Engineers
 * AI Engineers
 * DevOps Engineers
-* Designers
+* Product Designers
 * Technical Writers
 
-Start by checking:
+To contribute:
 
-* good-first-issue
-* help-wanted
-* documentation
-
-labels.
+1. Fork the repository
+2. Create a feature branch
+3. Implement your changes
+4. Submit a Pull Request
+5. Participate in discussions
 
 ---
 
-# Long-Term Goal
+# Long-Term Vision
 
-TalentOS aims to become the open-source talent infrastructure powering hiring, recruiting, and opportunity discovery for organizations worldwide.
+TalentOS aims to become an open-source talent infrastructure layer that powers:
+
+* Hiring Platforms
+* Recruitment Agencies
+* Universities
+* Communities
+* Startups
+* Enterprises
+
+We believe opportunities should be easier to discover and talent should be easier to identify.
 
 ---
 
 # Join Us
+
+If you're passionate about:
+
+* Artificial Intelligence
+* Hiring Technology
+* Open Source
+* Developer Tools
+* Building Meaningful Products
+
+We would love to build with you.
 
 ⭐ Star the repository
 
@@ -335,4 +300,6 @@ TalentOS aims to become the open-source talent infrastructure powering hiring, r
 
 🤝 Become a contributor
 
-Let's build the future of hiring together.
+---
+
+Built with ❤️ by the BugBaar Community.
