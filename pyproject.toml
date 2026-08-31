@@ -1,0 +1,11 @@
+[project]
+name = "talentos"
+version = "0.1.0"
+description = "Open-source talent intelligence and hiring infrastructure"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+
+[tool.pytest.ini_options]
+testpaths = ["backend/tests"]
+pythonpath = ["backend"]

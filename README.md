@@ -8,6 +8,40 @@ Our goal is to build the operating system for modern hiring by combining recruit
 
 ---
 
+# Working MVP
+
+This repository now includes a runnable product for the four MVP areas in this README:
+
+1. **Candidate management** — profiles, resume paste/upload, notes, search
+2. **Job management** — publish roles, recruiter dashboard, pipeline workflow
+3. **Resume intelligence** — skill / education / experience extraction (offline, explainable)
+4. **Matching engine** — ranked shortlists, skill gaps, job recommendations
+
+The matcher is **auditable on purpose**. Recruiters get a weighted score *and* the reasons (matched skills, missing required skills, experience vs bar). Embeddings/Qdrant can wrap this contract later without hiding why someone ranked.
+
+## Quick start
+
+```bash
+# API  →  http://localhost:8000/docs
+cd backend
+python -m venv .venv && .venv/Scripts/activate   # or source .venv/bin/activate
+pip install -r requirements.txt
+uvicorn app.main:app --reload --port 8000
+
+# App  →  http://localhost:3000
+cd ../frontend
+npm install && npm run dev
+```
+
+Demo password for all seeded users: `TalentOS!2026`
+
+- Recruiter: `priya@bugbaar.dev`
+- Candidate: `aisha.rahman@example.com`
+
+Full setup, architecture, and API notes live in [`docs/SETUP.md`](docs/SETUP.md).
+
+---
+
 # Why TalentOS?
 
 Hiring is still fragmented.

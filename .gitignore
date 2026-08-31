@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+.coverage
+talentos.db
+*.db
+
+# Node
+node_modules/
+.next/
+out/
+frontend/.env.local
+
+# Env / OS
+.env
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
