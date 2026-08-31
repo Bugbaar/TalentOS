@@ -22,7 +22,7 @@ export default function Sidebar({ open = true, onClose }: { open?: boolean; onCl
         open ? "translate-x-0" : "-translate-x-full"
       )}
     >
-      {/* Brand Header with Sarvam Motif */}
+      {/* Brand Header */}
       <div className="flex items-center justify-between px-2">
         <Link href="/" className="flex items-center gap-2.5">
           <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-sr-indigo-900 text-white shadow-sm">
@@ -61,7 +61,7 @@ export default function Sidebar({ open = true, onClose }: { open?: boolean; onCl
               className={cn(
                 "group flex items-center gap-3 rounded-xl px-3 py-2.5 text-xs font-medium transition-all duration-150",
                 isActive
-                  ? "bg-white text-tx shadow-sarvam-sm border border-st"
+                  ? "bg-white text-tx shadow-app-sm border border-st"
                   : "text-tx-secondary hover:bg-sf-secondary hover:text-tx"
               )}
             >
@@ -78,8 +78,8 @@ export default function Sidebar({ open = true, onClose }: { open?: boolean; onCl
         })}
       </nav>
 
-      {/* Sovereign AI Platform Footer Box */}
-      <div className="mt-auto rounded-2xl border border-st bg-white p-4 shadow-sarvam-sm">
+      {/* AI Platform Footer Box */}
+      <div className="mt-auto rounded-2xl border border-st bg-white p-4 shadow-app-sm">
         <div className="flex items-center justify-between">
           <span className="text-[10px] font-semibold uppercase tracking-wider text-sr-indigo-900">
             Sovereign Engine

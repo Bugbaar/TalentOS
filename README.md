@@ -37,7 +37,7 @@ python scripts/seed_demo_data.py
 
 ## ✨ Features & Architecture
 
-- **🏛️ Sarvam.ai Design System**: Clean, sovereign UI with soft off-white canvas, radial indigo ambient lighting, and signature pill controls.
+- **🏛️ Modern Minimalist Design**: Clean UI with soft off-white canvas, radial indigo ambient lighting, and signature pill controls.
 - **📄 Native Resume Parsing**: Upload `.pdf`, `.docx`, or `.txt` resumes. AI automatically parses contact info, verified skills, and work history directly into the local SQLite database.
 - **💼 AI Job Requisition Architect**: Draft rough notes and use **"AI Polish"** to auto-generate structured job descriptions, required skills, and salary bands.
 - **⚡ AI Candidate Compatibility Engine**: Multi-factor candidate evaluation (50% Skills + 30% Experience + 20% Semantic) with structured critique.
@@ -54,7 +54,7 @@ python scripts/seed_demo_data.py
 
 | Layer | Technology |
 | :--- | :--- |
-| **Frontend** | Next.js 16 (Turbopack), React 19, TypeScript, TailwindCSS v3 (Sarvam.ai tokens), Lucide Icons |
+| **Frontend** | Next.js 16 (Turbopack), React 19, TypeScript, TailwindCSS v3, Lucide Icons |
 | **Backend** | Python 3.11+, FastAPI, Async SQLAlchemy 2.0, Pydantic v2, Uvicorn |
 | **AI Intelligence** | Groq Llama 3.3 70B / GPT-OSS 120B (High-throughput structured JSON inference) |
 | **Document Parser** | `pypdf`, `python-docx` |

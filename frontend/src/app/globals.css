@@ -52,28 +52,28 @@ button {
 }
 
 @layer components {
-  /* Sarvam Crisp White Card */
+  /* Crisp White Card */
   .card {
-    @apply rounded-2xl border border-st bg-white shadow-sarvam-card transition-all duration-300;
+    @apply rounded-2xl border border-st bg-white shadow-app-card transition-all duration-300;
   }
   
   .card-hover {
-    @apply hover:border-sr-indigo-200 hover:shadow-sarvam-hover;
+    @apply hover:border-sr-indigo-200 hover:shadow-app-hover;
   }
 
-  /* Sarvam Category Eyebrow */
+  /* Category Eyebrow */
   .eyebrow {
     @apply text-xs font-medium uppercase tracking-[2px] text-sr-indigo-900 flex items-center gap-1.5;
   }
 
-  /* Sarvam Signature Filled Pill Button */
+  /* Signature Filled Pill Button */
   .btn-primary {
-    @apply relative inline-flex items-center justify-center gap-2 rounded-full bg-sarvam-btn px-5 py-2.5 text-sm font-medium text-white shadow-btn-primary transition-all duration-200 hover:bg-sarvam-btn-hover active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-40;
+    @apply relative inline-flex items-center justify-center gap-2 rounded-full bg-app-btn px-5 py-2.5 text-sm font-medium text-white shadow-btn-primary transition-all duration-200 hover:bg-app-btn-hover active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-40;
   }
 
-  /* Sarvam Signature Outline Pill Button */
+  /* Signature Outline Pill Button */
   .btn-secondary {
-    @apply inline-flex items-center justify-center gap-2 rounded-full bg-sarvam-outline-btn px-5 py-2.5 text-sm font-medium text-tx shadow-btn-outline transition-all duration-200 hover:bg-white active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-40;
+    @apply inline-flex items-center justify-center gap-2 rounded-full bg-app-outline-btn px-5 py-2.5 text-sm font-medium text-tx shadow-btn-outline transition-all duration-200 hover:bg-white active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-40;
   }
 
   /* Ghost Button */
@@ -86,7 +86,7 @@ button {
     @apply w-full rounded-xl border border-st bg-white px-3.5 py-2.5 text-sm text-tx outline-none transition-all placeholder:text-tx-muted focus:border-sr-indigo-500 focus:ring-2 focus:ring-sr-indigo-100;
   }
 
-  /* Sarvam Pill Tab */
+  /* Pill Tab */
   .pill-tab {
     @apply rounded-full px-4 py-1.5 text-xs font-medium transition-all duration-200 text-tx-secondary hover:text-tx;
   }

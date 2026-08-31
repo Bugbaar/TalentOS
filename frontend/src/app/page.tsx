@@ -85,9 +85,9 @@ export default function Dashboard() {
 
   return (
     <div className="space-y-10">
-      {/* Hero Section inspired directly by Sarvam.ai */}
+      {/* Hero Section */}
       <section className="relative flex flex-col items-center justify-center text-center pt-6 pb-4">
-        {/* Sarvam Sovereign Badge */}
+        {/* Category Badge */}
         <div className="flex flex-col items-center gap-1.5 w-fit">
           <div
             className="w-full h-px"
