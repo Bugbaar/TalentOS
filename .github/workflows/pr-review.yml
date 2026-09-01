@@ -5,10 +5,18 @@ name: PR Review
 on:
   pull_request:
     types: [opened, synchronize, ready_for_review, reopened]
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: 'PR number to review (required for manual runs)'
+        required: true
+        type: string
 
 jobs:
   review:
     uses: Bugbaar/.github/.github/workflows/pr-review.yml@main
+    with:
+      pr_number: ${{ inputs.pr_number || github.event.pull_request.number }}
     permissions:
       contents: read
       pull-requests: write
