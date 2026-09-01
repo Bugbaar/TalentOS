@@ -30,8 +30,6 @@ jobs:
       - uses: anthropics/claude-code-action@v1
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_AUTH_TOKEN }}
-          # track_progress works only on PR events; enable conditionally so manual runs work too
-          track_progress: ${{ github.event_name == 'pull_request' }}
           prompt: |
             REPO: ${{ github.repository }}
             PR NUMBER: ${{ inputs.pr_number || github.event.pull_request.number }}
