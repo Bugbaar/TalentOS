@@ -17,6 +17,7 @@ jobs:
       API_TIMEOUT_MS: 3000000
       ANTHROPIC_BASE_URL: ${{ secrets.ANTHROPIC_BASE_URL }}
       ANTHROPIC_AUTH_TOKEN: ${{ secrets.ANTHROPIC_AUTH_TOKEN }}
+      OVERRIDE_GITHUB_TOKEN: ${{ github.token }}
     permissions:
       contents: read
       pull-requests: write
