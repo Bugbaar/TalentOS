@@ -1,0 +1,307 @@
+From aca6fe58d7abc521dc2c57aaceffa6deb8f88fa0 Mon Sep 17 00:00:00 2001
+From: TalentOS Contributor <contributor@example.com>
+Date: Mon, 31 Aug 2026 12:57:20 +0000
+Subject: [PATCH] docs: add local development setup guide and backend bootstrap
+
+- Add docker-compose.yml services for Postgres, Redis, and Qdrant
+- Add minimal FastAPI backend entrypoint (backend/main.py) with a
+  /health endpoint so the setup can be verified end-to-end
+- Add pyproject.toml with backend dependencies
+- Add .env.example documenting required environment variables
+- Add docs/setup.md: step-by-step local dev setup guide
+- Update .gitignore for Python artifacts and .env
+
+Currently backend/main.py, docker-compose.yml, and pyproject.toml were
+empty placeholders, so there was no way for a new contributor to
+actually run the project locally. This fills that gap with a minimal,
+verified-working setup (tested: docker-compose.yml validates as YAML,
+pyproject.toml validates as TOML, and the FastAPI app boots and returns
+200 on / and /health).
+
+Closes: good-first-issue (local dev setup / docs)
+---
+ .env.example       |  18 ++++++++
+ .gitignore         |   4 ++
+ backend/main.py    |  39 +++++++++++++++++
+ docker-compose.yml |  46 +++++++++++++++++++
+ docs/setup.md      | 107 +++++++++++++++++++++++++++++++++++++++++++++
+ pyproject.toml     |  26 +++++++++++
+ 6 files changed, 240 insertions(+)
+ create mode 100644 .env.example
+ create mode 100644 docs/setup.md
+
+diff --git a/.env.example b/.env.example
+new file mode 100644
+index 0000000..cdbc820
+--- /dev/null
++++ b/.env.example
+@@ -0,0 +1,18 @@
++# Copy this file to .env and adjust as needed for local development.
++
++# --- Database (PostgreSQL) ---
++DATABASE_URL=postgresql://talentos:talentos@localhost:5432/talentos
++
++# --- Cache (Redis) ---
++REDIS_URL=redis://localhost:6379/0
++
++# --- Vector DB (Qdrant) ---
++QDRANT_URL=http://localhost:6333
++
++# --- AI providers (optional locally, needed for Resume Intelligence / Matching) ---
++OPENAI_API_KEY=
++OLLAMA_BASE_URL=http://localhost:11434
++
++# --- Backend service ---
++BACKEND_PORT=8000
++ENVIRONMENT=development
+diff --git a/.gitignore b/.gitignore
+index e69de29..bc4f72a 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -0,0 +1,4 @@
++__pycache__/
++*.pyc
++.venv/
++.env
+diff --git a/backend/main.py b/backend/main.py
+index e69de29..7cbbaad 100644
+--- a/backend/main.py
++++ b/backend/main.py
+@@ -0,0 +1,39 @@
++"""
++TalentOS Backend API entrypoint.
++
++Minimal FastAPI bootstrap so contributors have a working service to run
++locally. Business services (Candidate, Job, Resume, Matching, Analytics)
++should be added as routers under backend/ as they're implemented.
++"""
++
++import os
++
++from fastapi import FastAPI
++
++app = FastAPI(
++    title="TalentOS API",
++    description="Backend API for TalentOS - Talent Intelligence & Hiring Infrastructure",
++    version="0.1.0",
++)
++
++
++@app.get("/")
++def root():
++    return {"service": "talentos-backend", "status": "ok"}
++
++
++@app.get("/health")
++def health():
++    """Basic liveness/readiness check used for local setup verification."""
++    return {
++        "status": "healthy",
++        "database_url_configured": bool(os.getenv("DATABASE_URL")),
++        "redis_url_configured": bool(os.getenv("REDIS_URL")),
++        "qdrant_url_configured": bool(os.getenv("QDRANT_URL")),
++    }
++
++
++if __name__ == "__main__":
++    import uvicorn
++
++    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
+diff --git a/docker-compose.yml b/docker-compose.yml
+index e69de29..0e83d81 100644
+--- a/docker-compose.yml
++++ b/docker-compose.yml
+@@ -0,0 +1,46 @@
++version: "3.9"
++
++services:
++  postgres:
++    image: postgres:16-alpine
++    container_name: talentos_postgres
++    restart: unless-stopped
++    environment:
++      POSTGRES_USER: talentos
++      POSTGRES_PASSWORD: talentos
++      POSTGRES_DB: talentos
++    ports:
++      - "5432:5432"
++    volumes:
++      - postgres_data:/var/lib/postgresql/data
++    healthcheck:
++      test: ["CMD-SHELL", "pg_isready -U talentos"]
++      interval: 5s
++      timeout: 5s
++      retries: 5
++
++  redis:
++    image: redis:7-alpine
++    container_name: talentos_redis
++    restart: unless-stopped
++    ports:
++      - "6379:6379"
++    healthcheck:
++      test: ["CMD", "redis-cli", "ping"]
++      interval: 5s
++      timeout: 5s
++      retries: 5
++
++  qdrant:
++    image: qdrant/qdrant:latest
++    container_name: talentos_qdrant
++    restart: unless-stopped
++    ports:
++      - "6333:6333"
++      - "6334:6334"
++    volumes:
++      - qdrant_data:/qdrant/storage
++
++volumes:
++  postgres_data:
++  qdrant_data:
+diff --git a/docs/setup.md b/docs/setup.md
+new file mode 100644
+index 0000000..8f38775
+--- /dev/null
++++ b/docs/setup.md
+@@ -0,0 +1,107 @@
++# Local Development Setup
++
++This guide walks you through running TalentOS locally: the datastores
++(PostgreSQL, Redis, Qdrant) and the backend API (FastAPI).
++
++## Prerequisites
++
++Make sure you have the following installed:
++
++* [Docker](https://docs.docker.com/get-docker/) and Docker Compose
++* [Python 3.11+](https://www.python.org/downloads/)
++* [Git](https://git-scm.com/)
++
++## 1. Clone the repository
++
++```bash
++git clone https://github.com/Bugbaar/TalentOS.git
++cd TalentOS
++```
++
++## 2. Configure environment variables
++
++Copy the example env file and adjust values if needed (the defaults work
++out of the box with the Docker Compose setup below):
++
++```bash
++cp .env.example .env
++```
++
++## 3. Start the datastores
++
++TalentOS depends on three services in local development: PostgreSQL,
++Redis, and Qdrant. Start them with Docker Compose:
++
++```bash
++docker compose up -d
++```
++
++Check that all three containers are healthy:
++
++```bash
++docker compose ps
++```
++
++You should see `talentos_postgres`, `talentos_redis`, and
++`talentos_qdrant` running.
++
++To stop the services later:
++
++```bash
++docker compose down
++```
++
++## 4. Set up the backend
++
++Create a virtual environment and install dependencies:
++
++```bash
++cd backend
++python -m venv .venv
++source .venv/bin/activate   # On Windows: .venv\Scripts\activate
++pip install -e ".[dev]"     # installs from pyproject.toml
++```
++
++## 5. Run the backend API
++
++```bash
++uvicorn main:app --reload --port 8000
++```
++
++The API will be available at `http://localhost:8000`. You can verify
++everything is wired up correctly by hitting the health check endpoint:
++
++```bash
++curl http://localhost:8000/health
++```
++
++A healthy response looks like:
++
++```json
++{
++  "status": "healthy",
++  "database_url_configured": true,
++  "redis_url_configured": true,
++  "qdrant_url_configured": true
++}
++```
++
++## 6. Frontend (Next.js)
++
++The frontend package has not been scaffolded yet. Once
++`frontend/` is added, this section will be updated with the equivalent
++`npm install` / `npm run dev` steps.
++
++## Troubleshooting
++
++| Problem | Likely cause |
++|---|---|
++| `docker compose up` fails to bind a port | Another local service is already using 5432, 6379, or 6333 — stop it or change the port mapping in `docker-compose.yml`. |
++| `/health` shows a config value as `false` | Your `.env` wasn't loaded — confirm you copied `.env.example` to `.env` and that you're running `uvicorn` from a shell where it's picked up (or that you export the vars). |
++| `pip install -e ".[dev]"` fails | Confirm you're on Python 3.11+ (`python --version`) and that your virtual environment is activated. |
++
++## Next steps
++
++Once your environment is running, check the `good-first-issue` and
++`help-wanted` labels on GitHub Issues for a place to start contributing.
++See [CONTRIBUTING.md](../CONTRIBUTING.md) for the PR workflow.
+diff --git a/pyproject.toml b/pyproject.toml
+index e69de29..9275763 100644
+--- a/pyproject.toml
++++ b/pyproject.toml
+@@ -0,0 +1,26 @@
++[project]
++name = "talentos-backend"
++version = "0.1.0"
++description = "TalentOS backend API (FastAPI)"
++requires-python = ">=3.11"
++dependencies = [
++    "fastapi>=0.111.0",
++    "uvicorn[standard]>=0.30.0",
++    "sqlalchemy>=2.0.30",
++    "pydantic>=2.7.0",
++    "pydantic-settings>=2.3.0",
++    "python-dotenv>=1.0.1",
++    "psycopg2-binary>=2.9.9",
++    "redis>=5.0.4",
++]
++
++[project.optional-dependencies]
++dev = [
++    "pytest>=8.2.0",
++    "httpx>=0.27.0",
++    "ruff>=0.4.0",
++]
++
++[build-system]
++requires = ["setuptools>=68.0"]
++build-backend = "setuptools.build_meta"
+-- 
+2.43.0
+
