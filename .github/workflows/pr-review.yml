@@ -18,16 +18,17 @@ jobs:
       ANTHROPIC_BASE_URL: ${{ secrets.ANTHROPIC_BASE_URL }}
       ANTHROPIC_AUTH_TOKEN: ${{ secrets.ANTHROPIC_AUTH_TOKEN }}
       OVERRIDE_GITHUB_TOKEN: ${{ github.token }}
+    
     permissions:
       contents: read
       pull-requests: write
       id-token: write   # Required to generate the OIDC token
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          # If triggered by a pull request, check out the PR branch HEAD instead of the merge commit
-          ref: ${{ github.event.pull_request.head.sha }}
+          ref: ${{ github.event.pull_request.head.sha || github.ref }}
           fetch-depth: 1
 
       - uses: anthropics/claude-code-action@v1
