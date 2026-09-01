@@ -1,0 +1,16 @@
+# It just calls the shared workflow stored in the Bugbaar/.github repo.
+
+name: PR Review
+
+on:
+  pull_request:
+    types: [opened, synchronize, ready_for_review, reopened]
+
+jobs:
+  review:
+    uses: Bugbaar/.github/.github/workflows/pr-review.yml@main
+    permissions:
+      contents: read
+      pull-requests: write
+      id-token: write
+    secrets: inherit
