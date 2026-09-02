@@ -42,6 +42,9 @@ class Candidate(Base):
     applications: Mapped[list["Application"]] = relationship(
         back_populates="candidate", cascade="all, delete-orphan"
     )
+    notes: Mapped[list["CandidateNote"]] = relationship(
+        back_populates="candidate", cascade="all, delete-orphan"
+    )
 
 
 class Resume(Base):

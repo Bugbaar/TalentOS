@@ -60,6 +60,9 @@ class Application(Base):
     scorecards: Mapped[list["InterviewScorecard"]] = relationship(
         back_populates="application", cascade="all, delete-orphan"
     )
+    activities: Mapped[list["ApplicationActivity"]] = relationship(
+        back_populates="application", cascade="all, delete-orphan"
+    )
 
 
 class InterviewScorecard(Base):
@@ -81,3 +84,21 @@ class InterviewScorecard(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, nullable=False)
 
     application: Mapped[Application] = relationship(back_populates="scorecards")
+
+
+class ApplicationActivity(Base):
+    """Activity log for tracking application stage transitions and notes."""
+
+    __tablename__ = "application_activities"
+
+    id: Mapped[uuid.UUID] = mapped_column(Uuid(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    application_id: Mapped[uuid.UUID] = mapped_column(
+        Uuid(as_uuid=True), ForeignKey("applications.id", ondelete="CASCADE"), nullable=False
+    )
+    activity_type: Mapped[str] = mapped_column(String(50), nullable=False)  # status_change, note_added, scorecard_added
+    description: Mapped[str] = mapped_column(Text, nullable=False)
+    from_status: Mapped[str | None] = mapped_column(String(50), nullable=True)  # Previous status for transitions
+    to_status: Mapped[str | None] = mapped_column(String(50), nullable=True)  # New status for transitions
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, nullable=False)
+
+    application: Mapped[Application] = relationship(back_populates="activities")

@@ -78,6 +78,13 @@ class ApplicationStatusUpdate(BaseModel):
     notes: str | None = None
 
 
+class BulkStatusUpdate(BaseModel):
+    """Payload for bulk status updates (used by Kanban board)."""
+
+    application_ids: list[uuid.UUID]
+    status: ApplicationStatus
+
+
 class ApplicationRead(BaseModel):
     """Serialized application record for job-facing APIs."""
 

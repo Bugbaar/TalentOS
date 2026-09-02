@@ -8,7 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from app.core.exceptions import ValidationError
-from app.models.application import Application, ApplicationStatus
+from app.models.application import Application, ApplicationStatus, ApplicationActivity
 from app.models.candidate import Candidate
 from app.models.job import JobOpening, JobStatus
 from app.schemas.ai import JobEnrichmentRequest, JobEnrichmentResponse
@@ -89,12 +89,33 @@ async def update_application_status(
     application = await db.get(Application, application_id)
     if application is None:
         raise LookupError(f"Application {application_id} was not found")
+    previous_status = application.status
     application.status = status
     if notes is not None:
         application.notes = notes
+    # Log the status change
+    activity = ApplicationActivity(
+        application_id=application.id,
+        activity_type="status_change",
+        description=f"Status changed from {previous_status.value} to {status.value}",
+        from_status=previous_status.value,
+        to_status=status.value,
+    )
+    db.add(activity)
     await db.commit()
     await db.refresh(application)
     return application
+
+
+async def get_application_activities(db: AsyncSession, application_id: uuid.UUID) -> list[ApplicationActivity]:
+    """Get the activity log for an application."""
+
+    result = await db.execute(
+        select(ApplicationActivity)
+        .where(ApplicationActivity.application_id == application_id)
+        .order_by(ApplicationActivity.created_at.desc())
+    )
+    return list(result.scalars().all())
 
 
 async def enrich_draft(request: JobEnrichmentRequest) -> JobEnrichmentResponse:

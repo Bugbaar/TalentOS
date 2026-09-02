@@ -7,8 +7,10 @@ import {
   BarChart3,
   Briefcase,
   Cpu,
-  FileUp,
   Home,
+  Kanban,
+  Mail,
+  MessageSquare,
   PieChart,
   Settings,
   Users,
@@ -49,7 +51,9 @@ const navGroups: NavGroup[] = [
     title: "Intelligence",
     items: [
       { name: "Reports", href: "/reports", icon: PieChart },
-      { name: "Pipeline", href: "/pipeline", icon: FileUp },
+      { name: "Notes", href: "/notes", icon: MessageSquare },
+      { name: "Templates", href: "/templates", icon: Mail },
+      { name: "Pipeline", href: "/jobs", icon: Kanban },
     ],
   },
   {

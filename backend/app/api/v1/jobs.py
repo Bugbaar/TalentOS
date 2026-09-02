@@ -11,11 +11,11 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
 from app.models.job import JobStatus
-from app.models.application import Application, InterviewScorecard
+from app.models.application import Application, InterviewScorecard, ApplicationActivity
 from app.models.candidate import Candidate
 from app.schemas.application import ScorecardCreate, ScorecardRead
 from app.schemas.ai import JobEnrichmentRequest, JobEnrichmentResponse
-from app.schemas.job import ApplicationCreate, ApplicationRead, ApplicationStatusUpdate, JobCreate, JobDetailRead, JobRead
+from app.schemas.job import ApplicationCreate, ApplicationRead, ApplicationStatusUpdate, JobCreate, JobDetailRead, JobRead, BulkStatusUpdate
 from app.services import job_service
 from app.core.exceptions import ValidationError
 
@@ -139,3 +139,86 @@ async def update_application_status(
         return await job_service.update_application_status(db, application_id, update.status, update.notes)
     except LookupError as exc:
         raise HTTPException(status_code=404, detail=str(exc)) from exc
+
+
+@router.post("/bulk-status", response_model=list[ApplicationRead])
+async def bulk_update_application_status(
+    update: BulkStatusUpdate,
+    db: AsyncSession = Depends(get_db),
+) -> list[ApplicationRead]:
+    """Bulk update status for multiple applications. Used by Kanban board."""
+    results = []
+    for app_id in update.application_ids:
+        try:
+            result = await job_service.update_application_status(db, app_id, update.status)
+            results.append(result)
+        except LookupError:
+            pass  # Skip applications that don't exist
+    return results
+
+
+@router.get("/{job_id}/pipeline", response_model=dict)
+async def get_job_pipeline(
+    job_id: uuid.UUID,
+    db: AsyncSession = Depends(get_db),
+) -> dict:
+    """Get all applications for a job organized by pipeline stage."""
+    job = await db.get(JobOpening, job_id)
+    if job is None:
+        raise HTTPException(status_code=404, detail="Job not found")
+
+    result = await db.execute(
+        select(Application, Candidate)
+        .join(Candidate, Candidate.id == Application.candidate_id)
+        .where(Application.job_id == job_id)
+        .order_by(Application.applied_at.desc())
+    )
+
+    applications_by_stage = {status.value: [] for status in ApplicationStatus}
+    for application, candidate in result.all():
+        app_data = {
+            "id": str(application.id),
+            "candidate_id": str(application.candidate_id),
+            "status": application.status.value,
+            "ai_match_score": application.ai_match_score,
+            "applied_at": application.applied_at.isoformat(),
+            "candidate": {
+                "id": str(candidate.id),
+                "first_name": candidate.first_name,
+                "last_name": candidate.last_name,
+                "email": candidate.email,
+                "headline": candidate.headline,
+                "location": candidate.location,
+                "skills": candidate.skills or [],
+                "experience_years": candidate.experience_years,
+            }
+        }
+        applications_by_stage[application.status.value].append(app_data)
+
+    return {
+        "job_id": str(job_id),
+        "stages": list(applications_by_stage.keys()),
+        "pipeline": applications_by_stage,
+    }
+
+
+@router.get("/applications/{application_id}/activities")
+async def get_application_activities(
+    application_id: uuid.UUID,
+    db: AsyncSession = Depends(get_db),
+) -> list[dict]:
+    """Get the activity timeline for an application."""
+    if await db.get(Application, application_id) is None:
+        raise HTTPException(status_code=404, detail="Application not found")
+    activities = await job_service.get_application_activities(db, application_id)
+    return [
+        {
+            "id": str(a.id),
+            "activity_type": a.activity_type,
+            "description": a.description,
+            "from_status": a.from_status,
+            "to_status": a.to_status,
+            "created_at": a.created_at.isoformat(),
+        }
+        for a in activities
+    ]

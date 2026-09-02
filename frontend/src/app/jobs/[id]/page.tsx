@@ -8,6 +8,7 @@ import {
   Check,
   DollarSign,
   Download,
+  Kanban,
   MapPin,
   Scale,
   Sparkles,
@@ -109,12 +110,20 @@ export default function JobDetailPage({ params }: { params: Promise<{ id: string
             </p>
           </div>
 
-          <a
-            className="btn-secondary text-xs shrink-0"
-            href={`${process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000/api/v1"}/jobs/${id}/applicants/export/csv`}
-          >
-            <Download size={14} /> Export Pipeline CSV
-          </a>
+          <div className="flex gap-2">
+            <Link
+              href={`/jobs/${id}/pipeline`}
+              className="btn-primary text-xs shrink-0"
+            >
+              <Kanban size={14} /> Pipeline Board
+            </Link>
+            <a
+              className="btn-secondary text-xs shrink-0"
+              href={`${process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000/api/v1"}/jobs/${id}/applicants/export/csv`}
+            >
+              <Download size={14} /> Export CSV
+            </a>
+          </div>
         </div>
 
         <p className="mt-4 max-w-4xl text-xs leading-relaxed text-tx-secondary">
