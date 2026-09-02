@@ -1,7 +1,7 @@
 """Schemas exchanged with AI providers."""
 
 import uuid
-from typing import Literal
+from typing import Literal, Optional
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -32,6 +32,72 @@ class MatchResultSchema(BaseModel):
     matched_skills: list[str] = Field(default_factory=list)
     missing_skills: list[str] = Field(default_factory=list)
     ai_critique: str
+
+
+class SkillProficiency(BaseModel):
+    """Skill proficiency assessment."""
+
+    skill: str
+    proficiency: Literal["BEGINNER", "INTERMEDIATE", "ADVANCED", "EXPERT"]
+    confidence: float = Field(ge=0.0, le=1.0)
+
+
+class SkillGapAnalysis(BaseModel):
+    """Detailed skill gap analysis between candidate and job."""
+
+    skill_score: float = Field(ge=0.0, le=100.0)
+    matched_skills: list[str] = Field(default_factory=list)
+    missing_skills: list[str] = Field(default_factory=list)
+    strong_skills: list[str] = Field(default_factory=list)
+    weak_skills: list[str] = Field(default_factory=list)
+    proficiency: list[SkillProficiency] = Field(default_factory=list)
+    matched_required: list[str] = Field(default_factory=list)
+    matched_nice_to_have: list[str] = Field(default_factory=list)
+    experience_gap: float = Field(default=0.0)
+
+
+class AdvancedMatchResult(BaseModel):
+    """Advanced candidate-to-job matching result with multi-factor analysis."""
+
+    overall_score: float = Field(ge=0.0, le=100.0)
+    confidence: float = Field(ge=0.0, le=1.0, description="Confidence in the match score based on data completeness")
+    success_probability: float = Field(ge=0.0, le=100.0, description="Predicted probability of candidate success")
+
+    # Component scores
+    skill_score: float = Field(ge=0.0, le=100.0)
+    experience_score: float = Field(ge=0.0, le=100.0)
+    semantic_score: float = Field(ge=0.0, le=100.0)
+    education_score: float = Field(ge=0.0, le=100.0)
+    cultural_score: float = Field(ge=0.0, le=100.0)
+
+    # Skill analysis
+    matched_skills: list[str] = Field(default_factory=list)
+    missing_skills: list[str] = Field(default_factory=list)
+    weak_skills: list[str] = Field(default_factory=list)
+    strong_skills: list[str] = Field(default_factory=list)
+    skill_proficiency: list[SkillProficiency] = Field(default_factory=list)
+    matched_required: list[str] = Field(default_factory=list)
+    matched_nice_to_have: list[str] = Field(default_factory=list)
+    total_required: int = Field(default=0)
+    total_nice_to_have: int = Field(default=0)
+    experience_gap: float = Field(default=0.0)
+
+    # Analysis
+    ai_critique: str
+    strengths: list[str] = Field(default_factory=list)
+    concerns: list[str] = Field(default_factory=list)
+    recommendation: Literal["STRONG_MATCH", "GOOD_MATCH", "MODERATE_MATCH", "WEAK_MATCH", "POOR_MATCH"]
+    salary_fit: Optional[float] = Field(default=None, description="Salary expectation alignment score")
+    weights_used: dict[str, float] = Field(default_factory=dict, description="Scoring weights used for this evaluation")
+
+
+class BiasAuditResult(BaseModel):
+    """Bias audit results for the evaluation pipeline."""
+
+    total_candidates: int
+    bias_detected: bool
+    findings: list[str] = Field(default_factory=list)
+    recommendations: list[str] = Field(default_factory=list)
 
 
 class InterviewQuestionSchema(BaseModel):
@@ -110,3 +176,55 @@ class OutreachEmailResponse(BaseModel):
     subject_line: str
     email_body: str
     key_highlights: list[str] = Field(default_factory=list)
+
+
+class AdvancedMatchingRequest(BaseModel):
+    """Request for advanced matching with custom weights."""
+
+    candidate_id: uuid.UUID
+    job_id: uuid.UUID
+    weights: Optional[dict[str, float]] = Field(
+        default=None,
+        description="Custom weights for scoring (skill, experience, semantic, education, cultural)"
+    )
+
+
+class BatchRankingRequest(BaseModel):
+    """Request for batch ranking of candidates for a job."""
+
+    job_id: uuid.UUID
+    limit: int = Field(default=20, ge=1, le=100)
+    min_score: float = Field(default=0.0, ge=0.0, le=100.0)
+
+
+class BatchRankingResponse(BaseModel):
+    """Response for batch ranking."""
+
+    job_id: uuid.UUID
+    total_candidates: int
+    candidates: list[dict] = Field(default_factory=list)
+
+
+class HiringFunnelAnalytics(BaseModel):
+    """Hiring funnel analytics data."""
+
+    stage: str
+    count: int
+    conversion_rate: Optional[float] = None
+
+
+class SkillDemandAnalytics(BaseModel):
+    """Skill demand analytics."""
+
+    skill: str
+    demand_count: int
+    avg_match_score: float
+
+
+class TimeToHireAnalytics(BaseModel):
+    """Time to hire analytics."""
+
+    avg_days_to_hire: float
+    avg_days_per_stage: dict[str, float]
+    fastest_hires: list[dict]
+    slowest_stages: list[str]

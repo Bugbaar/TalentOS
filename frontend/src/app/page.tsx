@@ -3,6 +3,7 @@
 import Link from "next/link";
 import {
   ArrowUpRight,
+  ArrowDownRight,
   Briefcase,
   Cpu,
   FileUp,
@@ -11,13 +12,20 @@ import {
   TrendingUp,
   Users,
   Zap,
+  Calendar,
+  Target,
+  CheckCircle2,
+  Clock,
+  Award,
+  Activity,
+  ArrowRight,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { api } from "@/lib/api";
 import type { AnalyticsSummary, Application, Candidate } from "@/types";
 import StatusBadge from "@/components/StatusBadge";
 import ResumeUploader from "@/components/ResumeUploader";
-import { formatDate, initials } from "@/lib/utils";
+import { formatNumber, formatDate, initials, timeAgo, getScoreColor } from "@/lib/utils";
 
 export default function Dashboard() {
   const [analytics, setAnalytics] = useState<AnalyticsSummary | null>(null);
@@ -55,233 +63,307 @@ export default function Dashboard() {
   const stats = [
     {
       label: "Talent Ingested",
-      value: analytics?.total_candidates ?? 0,
+      value: formatNumber(analytics?.total_candidates ?? 0),
       icon: Users,
       trend: "Total Verified Candidates",
-      iconBg: "bg-blue-50 text-blue-700 border-blue-100",
+      change: "+12%",
+      changeType: "up" as const,
+      iconBg: "bg-brand-50 text-brand-600",
     },
     {
       label: "Active Requisitions",
       value: analytics?.active_jobs ?? 0,
       icon: Briefcase,
       trend: "Live Open Positions",
-      iconBg: "bg-sr-indigo-50 text-sr-indigo-700 border-indigo-100",
+      change: "+5%",
+      changeType: "up" as const,
+      iconBg: "bg-success-50 text-success-600",
     },
     {
       label: "Pipeline Volume",
-      value: analytics?.total_applications ?? 0,
+      value: formatNumber(analytics?.total_applications ?? 0),
       icon: TrendingUp,
       trend: "Processed Applications",
-      iconBg: "bg-amber-50 text-amber-700 border-amber-100",
+      change: "+18%",
+      changeType: "up" as const,
+      iconBg: "bg-warning-50 text-warning-600",
     },
     {
       label: "Mean Match Score",
       value: `${avgMatch}%`,
       icon: Sparkles,
-      trend: "Groq Evaluated Fit",
-      iconBg: "bg-emerald-50 text-emerald-700 border-emerald-100",
+      trend: "AI Evaluated Fit",
+      change: avgMatch >= 70 ? "Strong" : "Moderate",
+      changeType: avgMatch >= 70 ? ("up" as const) : ("neutral" as const),
+      iconBg: "bg-purple-50 text-purple-600",
     },
   ];
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-8 animate-fade-in">
       {/* Hero Section */}
-      <section className="relative flex flex-col items-center justify-center text-center pt-6 pb-4">
-        {/* Category Badge */}
-        <div className="flex flex-col items-center gap-1.5 w-fit">
-          <div
-            className="w-full h-px"
-            style={{ background: "radial-gradient(circle, #6a88e2 0%, transparent 100%)" }}
-          />
-          <p className="px-6 font-matter text-sr-indigo-900 text-xs md:text-sm font-medium tracking-wide">
-            India&apos;s Sovereign Talent Intelligence Platform
-          </p>
-          <div
-            className="w-full h-px"
-            style={{ background: "radial-gradient(circle, #6a88e2 0%, transparent 100%)" }}
-          />
-        </div>
+      <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-brand-600 via-brand-700 to-brand-800 p-8 sm:p-10 text-white">
+        <div className="absolute inset-0 bg-gradient-mesh opacity-30" />
+        <div className="absolute -top-24 -right-24 w-72 h-72 rounded-full bg-white/10 blur-3xl" />
+        <div className="absolute -bottom-24 -left-24 w-72 h-72 rounded-full bg-brand-400/30 blur-3xl" />
 
-        {/* Main Headline */}
-        <h1 className="mt-4 font-matter text-3xl sm:text-5xl font-bold tracking-tight text-tx max-w-3xl leading-[1.15]">
-          AI-Powered Talent Matching for High-Growth Teams
-        </h1>
-
-        <p className="mt-3 max-w-2xl text-sm sm:text-base text-tx-secondary leading-relaxed font-matter">
-          Built on sovereign compute. Powered by frontier-class Groq Llama 3.3 models.
-          Delivering precision candidate ranking and interview intelligence.
-        </p>
-
-        {/* Action Buttons */}
-        <div className="mt-6 flex flex-wrap justify-center items-center gap-3">
-          <button className="btn-primary" onClick={() => setModal(true)}>
-            <FileUp size={15} /> Ingest Resume
-          </button>
-          <Link className="btn-secondary" href="/jobs">
-            <Plus size={15} /> Create Requisition
-          </Link>
+        <div className="relative">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+            <div className="flex-1">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-xs font-medium">
+                <Sparkles size={12} />
+                <span>AI-Powered Talent Intelligence</span>
+              </div>
+              <h1 className="mt-3 text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight max-w-2xl">
+                Welcome back, build your dream team
+              </h1>
+              <p className="mt-2 text-sm sm:text-base text-white/80 max-w-xl">
+                Ingest resumes, evaluate candidates, and hire top talent 10x faster with our AI-powered recruitment platform.
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-3">
+              <button
+                onClick={() => setModal(true)}
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white text-brand-700 text-sm font-semibold shadow-lg hover:shadow-xl transition-all hover:-translate-y-0.5"
+              >
+                <FileUp size={16} />
+                Ingest Resume
+              </button>
+              <Link
+                href="/jobs"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-white text-sm font-semibold hover:bg-white/20 transition-all"
+              >
+                <Plus size={16} />
+                New Requisition
+              </Link>
+            </div>
+          </div>
         </div>
       </section>
 
       {error && (
-        <div className="rounded-2xl border border-rose-200 bg-rose-50 p-4 text-xs text-rose-700">
+        <div className="rounded-2xl border border-danger-200 bg-danger-50 p-4 text-sm text-danger-700">
           {error}
         </div>
       )}
 
       {/* KPI Stats Grid */}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {stats.map(({ label, value, icon: Icon, trend, iconBg }) => (
-          <div key={label} className="card p-5 group hover:border-sr-indigo-200">
-            <div className="flex items-center justify-between">
-              <span className={`grid h-9 w-9 place-items-center rounded-xl border ${iconBg}`}>
-                <Icon size={17} />
+      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        {stats.map(({ label, value, icon: Icon, trend, change, changeType, iconBg }) => (
+          <div key={label} className="card p-6 hover:shadow-lg transition-all hover:-translate-y-0.5">
+            <div className="flex items-center justify-between mb-4">
+              <div className={`flex items-center justify-center w-11 h-11 rounded-xl ${iconBg}`}>
+                <Icon size={20} />
+              </div>
+              <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-semibold ${
+                changeType === "up" ? "bg-success-50 text-success-700" :
+                changeType === "down" ? "bg-danger-50 text-danger-700" :
+                "bg-sf-secondary text-tx-tertiary"
+              }`}>
+                {changeType === "up" && <ArrowUpRight size={10} />}
+                {changeType === "down" && <ArrowDownRight size={10} />}
+                {change}
               </span>
-              <span className="text-[11px] text-tx-tertiary font-medium">{trend}</span>
             </div>
-            <p className="mt-4 text-xs font-semibold uppercase tracking-wider text-tx-secondary">
-              {label}
-            </p>
-            <p className="mt-1 font-matter text-3xl font-bold text-tx">{value}</p>
+            <p className="text-3xl font-bold text-tx-primary">{value}</p>
+            <p className="mt-1 text-sm font-medium text-tx-primary">{label}</p>
+            <p className="mt-0.5 text-xs text-tx-tertiary">{trend}</p>
           </div>
         ))}
       </div>
 
-      {/* Feature Gateways */}
-      <div className="grid gap-5 md:grid-cols-3">
+      {/* Main Content Grid */}
+      <div className="grid gap-6 lg:grid-cols-3">
+        {/* Recent Applications */}
+        <div className="lg:col-span-2 card overflow-hidden">
+          <div className="flex items-center justify-between border-b border-sf-tertiary px-6 py-5">
+            <div className="flex items-center gap-3">
+              <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-brand-50 text-brand-600">
+                <Activity size={20} />
+              </div>
+              <div>
+                <h2 className="text-sm font-semibold text-tx-primary">Recent Applications</h2>
+                <p className="text-xs text-tx-tertiary">Latest candidate submissions</p>
+              </div>
+            </div>
+            <Link
+              href="/jobs"
+              className="inline-flex items-center gap-1 text-xs font-semibold text-brand-600 hover:text-brand-700"
+            >
+              View all <ArrowRight size={12} />
+            </Link>
+          </div>
+
+          <div className="divide-y divide-sf-tertiary">
+            {applications.map((app) => (
+              <div key={app.id} className="flex items-center gap-4 px-6 py-4 hover:bg-sf-secondary/50 transition-colors">
+                <div className="flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-br from-brand-500 to-brand-600 text-white text-xs font-bold flex-shrink-0">
+                  {initials(app.name.split(" ")[0], app.name.split(" ").slice(1).join(" "))}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-semibold text-tx-primary truncate">{app.name}</p>
+                  <p className="text-xs text-tx-tertiary truncate">{app.headline || "Candidate"}</p>
+                </div>
+                <div className="flex items-center gap-3 flex-shrink-0">
+                  {app.ai_match_score && (
+                    <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold border ${getScoreColor(app.ai_match_score)}`}>
+                      <Sparkles size={10} />
+                      {Math.round(app.ai_match_score)}%
+                    </span>
+                  )}
+                  <StatusBadge status={app.status} />
+                </div>
+                <div className="hidden sm:block text-right flex-shrink-0">
+                  <p className="text-xs text-tx-tertiary">{timeAgo(app.applied_at)}</p>
+                </div>
+              </div>
+            ))}
+            {!applications.length && (
+              <div className="empty-state">
+                <div className="empty-state-icon">
+                  <Users size={24} />
+                </div>
+                <h3 className="mt-4 text-sm font-semibold text-tx-primary">No applications yet</h3>
+                <p className="mt-1 text-xs text-tx-tertiary">Start by ingesting resumes to see candidate applications.</p>
+                <button onClick={() => setModal(true)} className="mt-4 btn-primary">
+                  <FileUp size={14} />
+                  Ingest First Resume
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Quick Actions */}
+        <div className="space-y-6">
+          <div className="card p-6">
+            <h2 className="text-sm font-semibold text-tx-primary mb-4">Quick Actions</h2>
+            <div className="space-y-2">
+              <button
+                onClick={() => setModal(true)}
+                className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-sf-secondary transition-colors text-left group"
+              >
+                <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-brand-50 text-brand-600 group-hover:bg-brand-100">
+                  <FileUp size={16} />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium text-tx-primary">Ingest Resume</p>
+                  <p className="text-xs text-tx-tertiary">Parse a new candidate</p>
+                </div>
+                <ArrowRight size={14} className="text-tx-muted group-hover:text-brand-600 transition-colors" />
+              </button>
+
+              <Link
+                href="/jobs"
+                className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-sf-secondary transition-colors text-left group"
+              >
+                <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-success-50 text-success-600 group-hover:bg-success-100">
+                  <Plus size={16} />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium text-tx-primary">Create Job</p>
+                  <p className="text-xs text-tx-tertiary">Post a new opening</p>
+                </div>
+                <ArrowRight size={14} className="text-tx-muted group-hover:text-success-600 transition-colors" />
+              </Link>
+
+              <Link
+                href="/matching"
+                className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-sf-secondary transition-colors text-left group"
+              >
+                <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-warning-50 text-warning-600 group-hover:bg-warning-100">
+                  <Cpu size={16} />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium text-tx-primary">AI Match</p>
+                  <p className="text-xs text-tx-tertiary">Evaluate candidates</p>
+                </div>
+                <ArrowRight size={14} className="text-tx-muted group-hover:text-warning-600 transition-colors" />
+              </Link>
+            </div>
+          </div>
+
+          {/* Top Skills */}
+          <div className="card p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-sm font-semibold text-tx-primary">Top Skills</h2>
+              <Award size={16} className="text-tx-muted" />
+            </div>
+            <div className="space-y-2">
+              {(analytics?.top_candidate_skills || []).slice(0, 6).map((item) => (
+                <div key={item.skill} className="flex items-center justify-between p-2.5 rounded-lg hover:bg-sf-secondary transition-colors">
+                  <div className="flex items-center gap-2">
+                    <div className="w-1.5 h-1.5 rounded-full bg-brand-500" />
+                    <span className="text-sm font-medium text-tx-primary">{item.skill}</span>
+                  </div>
+                  <span className="text-xs font-semibold text-tx-tertiary">{item.count}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Feature Cards */}
+      <div className="grid gap-6 md:grid-cols-3">
+        <Link
+          href="/analytics"
+          className="group card p-6 hover:shadow-lg transition-all hover:-translate-y-0.5"
+        >
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center justify-center w-11 h-11 rounded-xl bg-gradient-to-br from-brand-500 to-brand-600 text-white">
+              <TrendingUp size={20} />
+            </div>
+            <ArrowUpRight size={16} className="text-tx-muted group-hover:text-brand-600 transition-colors" />
+          </div>
+          <h3 className="text-sm font-semibold text-tx-primary">Analytics Dashboard</h3>
+          <p className="mt-1 text-xs text-tx-tertiary leading-relaxed">
+            Deep insights into your hiring funnel, candidate quality, and pipeline health.
+          </p>
+        </Link>
+
         <Link
           href="/matching"
-          className="card p-6 hover:border-sr-indigo-300 group transition-all"
+          className="group card p-6 hover:shadow-lg transition-all hover:-translate-y-0.5"
         >
-          <div className="flex items-center justify-between">
-            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-sr-indigo-50 text-sr-indigo-900 border border-sr-indigo-100">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center justify-center w-11 h-11 rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 text-white">
               <Cpu size={20} />
             </div>
-            <ArrowUpRight size={16} className="text-tx-tertiary group-hover:text-sr-indigo-600 transition-colors" />
+            <ArrowUpRight size={16} className="text-tx-muted group-hover:text-purple-600 transition-colors" />
           </div>
-          <h3 className="mt-4 font-matter font-semibold text-base text-tx">AI Fit Simulator</h3>
-          <p className="mt-1 text-xs text-tx-secondary leading-relaxed">
-            Run instant multi-factor compatibility evaluation and skill gap analysis against open jobs.
+          <h3 className="text-sm font-semibold text-tx-primary">AI Fit Simulator</h3>
+          <p className="mt-1 text-xs text-tx-tertiary leading-relaxed">
+            Run instant multi-factor compatibility evaluation with skill gap analysis.
           </p>
         </Link>
 
         <Link
           href="/candidates"
-          className="card p-6 hover:border-sr-indigo-300 group transition-all"
+          className="group card p-6 hover:shadow-lg transition-all hover:-translate-y-0.5"
         >
-          <div className="flex items-center justify-between">
-            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-blue-50 text-blue-700 border border-blue-100">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center justify-center w-11 h-11 rounded-xl bg-gradient-to-br from-success-500 to-success-600 text-white">
               <Users size={20} />
             </div>
-            <ArrowUpRight size={16} className="text-tx-tertiary group-hover:text-blue-600 transition-colors" />
+            <ArrowUpRight size={16} className="text-tx-muted group-hover:text-success-600 transition-colors" />
           </div>
-          <h3 className="mt-4 font-matter font-semibold text-base text-tx">Talent Pool Directory</h3>
-          <p className="mt-1 text-xs text-tx-secondary leading-relaxed">
-            Search candidates by verified technical skills, career timeline, and generated dossier.
+          <h3 className="text-sm font-semibold text-tx-primary">Talent Pool</h3>
+          <p className="mt-1 text-xs text-tx-tertiary leading-relaxed">
+            Search and filter your candidate database with skill-based queries.
           </p>
         </Link>
-
-        <Link
-          href="/jobs"
-          className="card p-6 hover:border-sr-indigo-300 group transition-all"
-        >
-          <div className="flex items-center justify-between">
-            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-amber-50 text-amber-700 border border-amber-100">
-              <Briefcase size={20} />
-            </div>
-            <ArrowUpRight size={16} className="text-tx-tertiary group-hover:text-amber-600 transition-colors" />
-          </div>
-          <h3 className="mt-4 font-matter font-semibold text-base text-tx">Active Requisitions</h3>
-          <p className="mt-1 text-xs text-tx-secondary leading-relaxed">
-            Manage applicant pipelines, side-by-side matrices, and interview scorecards.
-          </p>
-        </Link>
-      </div>
-
-      {/* Recent Applications Pipeline */}
-      <div className="card overflow-hidden">
-        <div className="flex items-center justify-between border-b border-st px-6 py-4">
-          <div>
-            <div className="eyebrow text-sr-indigo-900">
-              <TrendingUp size={13} className="text-sr-indigo-600" /> Pipeline Ingestion
-            </div>
-            <h2 className="mt-0.5 font-matter text-base font-semibold text-tx">
-              Recent Candidate Applications
-            </h2>
-          </div>
-          <Link
-            href="/jobs"
-            className="inline-flex items-center gap-1 text-xs font-semibold text-sr-indigo-600 hover:underline"
-          >
-            All Requisitions <ArrowUpRight size={14} />
-          </Link>
-        </div>
-
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs">
-            <thead className="border-b border-st bg-sf-secondary font-medium uppercase tracking-wider text-tx-secondary">
-              <tr>
-                <th className="px-6 py-3">Candidate</th>
-                <th className="px-6 py-3">Headline</th>
-                <th className="px-6 py-3">Applied</th>
-                <th className="px-6 py-3">AI Fit</th>
-                <th className="px-6 py-3">Stage</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-st">
-              {applications.map((app) => (
-                <tr key={app.id} className="transition-colors hover:bg-sf-secondary/50">
-                  <td className="px-6 py-3.5">
-                    <div className="flex items-center gap-3">
-                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-sr-indigo-50 font-semibold text-sr-indigo-700 border border-sr-indigo-100">
-                        {initials(
-                          app.name.split(" ")[0],
-                          app.name.split(" ").slice(1).join(" ")
-                        )}
-                      </div>
-                      <span className="font-semibold text-tx">{app.name}</span>
-                    </div>
-                  </td>
-                  <td className="px-6 py-3.5 text-tx-secondary max-w-xs truncate">
-                    {app.headline || "Candidate"}
-                  </td>
-                  <td className="px-6 py-3.5 text-tx-tertiary">
-                    {formatDate(app.applied_at)}
-                  </td>
-                  <td className="px-6 py-3.5 font-medium">
-                    {app.ai_match_score ? (
-                      <span className="inline-flex items-center gap-1 text-emerald-700 font-semibold">
-                        <Sparkles size={12} className="text-emerald-500" />
-                        {Math.round(app.ai_match_score)}%
-                      </span>
-                    ) : (
-                      <span className="text-tx-tertiary">—</span>
-                    )}
-                  </td>
-                  <td className="px-6 py-3.5">
-                    <StatusBadge status={app.status} />
-                  </td>
-                </tr>
-              ))}
-              {!applications.length && (
-                <tr>
-                  <td colSpan={5} className="px-6 py-10 text-center text-tx-tertiary">
-                    No recent applications recorded.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
       </div>
 
       {/* Upload Modal */}
       {modal && (
-        <div className="fixed inset-0 z-50 grid place-items-center bg-tx/40 p-4 backdrop-blur-sm">
-          <ResumeUploader
-            onUploaded={(person) => setCandidates((items) => [person, ...items])}
-            onClose={() => setModal(false)}
-          />
+        <div className="modal-overlay">
+          <div className="modal-content max-w-lg">
+            <ResumeUploader
+              onUploaded={(person) => setCandidates((items) => [person, ...items])}
+              onClose={() => setModal(false)}
+            />
+          </div>
         </div>
       )}
     </div>

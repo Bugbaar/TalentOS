@@ -14,12 +14,12 @@ export default function RootLayout({
 
   return (
     <html lang="en">
-      <body className="min-h-screen bg-sf text-tx selection:bg-sr-indigo-100 selection:text-sr-indigo-900 font-sans">
+      <body className="min-h-screen bg-sf text-tx-primary antialiased">
         <div className="flex min-h-screen">
           <Sidebar open={menuOpen} onClose={() => setMenuOpen(false)} />
-          <div className="flex min-w-0 flex-1 flex-col">
+          <div className="flex min-w-0 flex-1 flex-col lg:ml-72">
             <Navbar onMenu={() => setMenuOpen(true)} />
-            <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-8 sm:px-8">
+            <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
               {children}
             </main>
           </div>

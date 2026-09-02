@@ -2,11 +2,41 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Premium Design System */
 :root {
   --background: #FAF9F6;
   --foreground: #1E2033;
   --card: #FFFFFF;
   --border: #E2E6EE;
+
+  /* Extended Color Palette */
+  --sr-indigo-50: #EEF2FF;
+  --sr-indigo-100: #E0E7FF;
+  --sr-indigo-200: #C7D2FE;
+  --sr-indigo-300: #A5B4FC;
+  --sr-indigo-400: #818CF8;
+  --sr-indigo-500: #6366F1;
+  --sr-indigo-600: #4F46E5;
+  --sr-indigo-700: #4338CA;
+  --sr-indigo-800: #3730A3;
+  --sr-indigo-900: #312E81;
+
+  /* Semantic Colors */
+  --success-50: #ECFDF5;
+  --success-500: #10B981;
+  --success-600: #059669;
+  --warning-50: #FFFBEB;
+  --warning-500: #F59E0B;
+  --warning-600: #D97706;
+  --danger-50: #FEF2F2;
+  --danger-500: #EF4444;
+  --danger-600: #DC2626;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
 }
 
 * {
@@ -17,14 +47,23 @@ body {
   margin: 0;
   background-color: var(--background);
   color: var(--foreground);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  background-image: 
-    radial-gradient(ellipse 70% 35% at 50% -5%, #DDE6FF 0%, #F1F4FF 35%, transparent 70%),
-    radial-gradient(circle, rgba(30, 32, 51, 0.035) 1px, transparent 1px);
-  background-size: 100% 100%, 18px 18px;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background-image:
+    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(99, 102, 241, 0.08) 0%, transparent 60%),
+    radial-gradient(circle at 100% 100%, rgba(99, 102, 241, 0.03) 0%, transparent 50%),
+    radial-gradient(circle, rgba(30, 32, 51, 0.02) 1px, transparent 1px);
+  background-size: 100% 100%, 100% 100%, 20px 20px;
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  line-height: 1.5;
+}
+
+/* Premium Typography */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
 }
 
 /* Custom Scrollbar */
@@ -33,14 +72,14 @@ body {
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #FAF9F6;
+  background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: #D1D5DB;
+  background: rgba(0, 0, 0, 0.15);
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #9CA3AF;
+  background: rgba(0, 0, 0, 0.25);
 }
 
 button, input, textarea, select {
@@ -52,45 +91,189 @@ button {
 }
 
 @layer components {
-  /* Crisp White Card */
+  /* Premium Card */
   .card {
-    @apply rounded-2xl border border-st bg-white shadow-app-card transition-all duration-300;
+    @apply rounded-2xl border border-[#E2E6EE] bg-white shadow-[0_1px_3px_rgba(0,0,0,0.04)] transition-all duration-300;
   }
-  
+
   .card-hover {
-    @apply hover:border-sr-indigo-200 hover:shadow-app-hover;
+    @apply hover:border-[#C7D2FE] hover:shadow-[0_8px_30px_rgba(99,102,241,0.08)] hover:-translate-y-0.5;
+  }
+
+  /* Glass Card */
+  .glass-card {
+    @apply rounded-2xl border border-white/20 bg-white/80 backdrop-blur-xl shadow-[0_8px_30px_rgba(0,0,0,0.04)];
   }
 
   /* Category Eyebrow */
   .eyebrow {
-    @apply text-xs font-medium uppercase tracking-[2px] text-sr-indigo-900 flex items-center gap-1.5;
+    @apply text-[10px] font-semibold uppercase tracking-[3px] text-sr-indigo-700 flex items-center gap-2;
   }
 
-  /* Signature Filled Pill Button */
+  /* Primary Button - Gradient */
   .btn-primary {
-    @apply relative inline-flex items-center justify-center gap-2 rounded-full bg-app-btn px-5 py-2.5 text-sm font-medium text-white shadow-btn-primary transition-all duration-200 hover:bg-app-btn-hover active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-40;
+    @apply relative inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-sr-indigo-600 to-sr-indigo-500 px-6 py-2.5 text-sm font-semibold text-white shadow-[0_4px_14px_rgba(99,102,241,0.35)] transition-all duration-200 hover:shadow-[0_6px_20px_rgba(99,102,241,0.45)] hover:-translate-y-0.5 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0 disabled:hover:shadow-[0_4px_14px_rgba(99,102,241,0.35)];
   }
 
-  /* Signature Outline Pill Button */
+  /* Secondary Button */
   .btn-secondary {
-    @apply inline-flex items-center justify-center gap-2 rounded-full bg-app-outline-btn px-5 py-2.5 text-sm font-medium text-tx shadow-btn-outline transition-all duration-200 hover:bg-white active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-40;
+    @apply inline-flex items-center justify-center gap-2 rounded-full border border-[#E2E6EE] bg-white px-6 py-2.5 text-sm font-semibold text-sr-indigo-700 shadow-[0_2px_8px_rgba(0,0,0,0.04)] transition-all duration-200 hover:border-[#C7D2FE] hover:bg-sr-indigo-50/50 hover:shadow-[0_4px_14px_rgba(99,102,241,0.1)] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-40;
   }
 
   /* Ghost Button */
   .btn-ghost {
-    @apply inline-flex items-center justify-center gap-2 rounded-full px-4 py-2 text-sm font-medium text-tx-secondary transition-all hover:bg-sf-secondary hover:text-tx;
+    @apply inline-flex items-center justify-center gap-2 rounded-full px-4 py-2 text-sm font-medium text-sr-indigo-700 transition-all hover:bg-sr-indigo-50;
   }
 
-  /* Clean Input Field */
+  /* Icon Button */
+  .btn-icon {
+    @apply inline-flex items-center justify-center rounded-xl p-2.5 text-sr-indigo-700 transition-all hover:bg-sr-indigo-50;
+  }
+
+  /* Premium Input */
   .field {
-    @apply w-full rounded-xl border border-st bg-white px-3.5 py-2.5 text-sm text-tx outline-none transition-all placeholder:text-tx-muted focus:border-sr-indigo-500 focus:ring-2 focus:ring-sr-indigo-100;
+    @apply w-full rounded-xl border border-[#E2E6EE] bg-white px-4 py-3 text-sm text-[#1E2033] outline-none transition-all placeholder:text-[#9CA3AF] focus:border-sr-indigo-500 focus:ring-4 focus:ring-sr-indigo-500/10;
   }
 
-  /* Pill Tab */
+  /* Premium Select */
+  .select-field {
+    @apply w-full rounded-xl border border-[#E2E6EE] bg-white px-4 py-3 text-sm text-[#1E2033] outline-none transition-all appearance-none cursor-pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%239CA3AF' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 40px;
+  }
+
+  /* Pill Tabs */
   .pill-tab {
-    @apply rounded-full px-4 py-1.5 text-xs font-medium transition-all duration-200 text-tx-secondary hover:text-tx;
+    @apply rounded-full px-5 py-2 text-xs font-medium transition-all duration-200 text-[#6B7280] hover:text-[#1E2033] hover:bg-[#F3F4F6];
   }
   .pill-tab-active {
-    @apply rounded-full bg-white px-4 py-1.5 text-xs font-medium text-tx shadow-sm border border-st-secondary;
+    @apply rounded-full px-5 py-2 text-xs font-medium bg-[#1E2033] text-white;
   }
+
+  /* Status Badge */
+  .badge {
+    @apply inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-semibold;
+  }
+
+  /* Metric Card */
+  .metric-card {
+    @apply card p-6 hover:shadow-[0_8px_30px_rgba(0,0,0,0.06)];
+  }
+
+  /* Animated Gradient Border */
+  .gradient-border {
+    @apply relative;
+  }
+  .gradient-border::before {
+    content: '';
+    @apply absolute inset-0 rounded-2xl p-[1px] bg-gradient-to-r from-sr-indigo-500 via-purple-500 to-pink-500 -z-10 opacity-0 transition-opacity duration-300;
+  }
+  .gradient-border:hover::before {
+    @apply opacity-100;
+  }
+
+  /* Skeleton Loading */
+  .skeleton {
+    @apply animate-pulse bg-gradient-to-r from-[#F3F4F6] via-[#E5E7EB] to-[#F3F4F6] bg-[length:200%_100%] rounded-lg;
+    animation: shimmer 2s infinite;
+  }
+
+  /* Chart Tooltip */
+  .chart-tooltip {
+    @apply rounded-lg border border-[#E2E6EE] bg-white px-3 py-2 text-xs shadow-lg;
+  }
+}
+
+/* Animations */
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(-10px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+.animate-slide-in {
+  animation: slideIn 0.3s ease-out;
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.2s ease-out;
+}
+
+/* Professional Table */
+.pro-table {
+  @apply w-full text-left text-sm;
+}
+.pro-table thead {
+  @apply border-b border-[#E2E6EE];
+}
+.pro-table th {
+  @apply px-6 py-4 text-[11px] font-semibold uppercase tracking-wider text-[#6B7280];
+}
+.pro-table td {
+  @apply px-6 py-4 border-b border-[#F3F4F6];
+}
+.pro-table tbody tr {
+  @apply transition-colors hover:bg-[#FAFBFC];
+}
+
+/* Progress Bar */
+.progress-bar {
+  @apply h-2 overflow-hidden rounded-full bg-[#E5E7EB];
+}
+.progress-bar-fill {
+  @apply h-full rounded-full transition-all duration-500;
+}
+
+/* Modal Overlay */
+.modal-overlay {
+  @apply fixed inset-0 z-50 bg-black/40 backdrop-blur-sm;
+}
+.modal-content {
+  @apply fixed left-1/2 top-1/2 z-50 w-full max-w-lg -translate-x-1/2 -translate-y-1/2 rounded-2xl border border-[#E2E6EE] bg-white shadow-[0_25px_50px_-12px_rgba(0,0,0,0.25)];
+}
+
+/* Dropdown */
+.dropdown {
+  @apply absolute right-0 z-50 mt-2 w-56 rounded-xl border border-[#E2E6EE] bg-white py-2 shadow-[0_10px_40px_rgba(0,0,0,0.1)];
+}
+.dropdown-item {
+  @apply flex items-center gap-3 px-4 py-2.5 text-sm text-[#4B5563] transition-colors hover:bg-[#F9FAFB] hover:text-[#1E2033];
+}
+
+/* Tooltip */
+.tooltip {
+  @apply absolute z-50 rounded-lg border border-[#E2E6EE] bg-white px-3 py-2 text-xs shadow-lg;
+}
+
+/* Notification Badge */
+.notification-badge {
+  @apply absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-[#EF4444] text-[10px] font-bold text-white;
+}
+
+/* Empty State */
+.empty-state {
+  @apply flex flex-col items-center justify-center py-16 text-center;
+}
+.empty-state-icon {
+  @apply flex h-16 w-16 items-center justify-center rounded-2xl bg-[#F3F4F6] text-[#9CA3AF];
 }
